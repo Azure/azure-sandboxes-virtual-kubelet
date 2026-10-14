@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "virtual-kubelet.fullname" . }}
+  labels:
+    {{- include "virtual-kubelet.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "virtual-kubelet.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "virtual-kubelet.labels" . | nindent 8 }}
+        azure.workload.identity/use: "true"
+    spec:
+      serviceAccountName: {{ include "virtual-kubelet.serviceAccountName" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}/virtual-kubelet:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: NODE_NAME
+              value: {{ .Values.nodeName | quote }}
+            - name: SUBSCRIPTION_ID
+              value: {{ .Values.subscriptionId | quote }}
+            - name: RESOURCE_GROUP
+              value: {{ .Values.resourceGroup | quote }}
+            - name: SANDBOX_GROUP
+              value: {{ .Values.sandboxGroup | quote }}
+            - name: REGION
+              value: {{ .Values.region | quote }}

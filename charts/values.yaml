@@ -1,0 +1,18 @@
+# The sandbox group the virtual node runs pods in. All four are required.
+subscriptionId: ""
+resourceGroup: ""
+sandboxGroup: ""
+region: ""
+
+# Name of the virtual node registered in the cluster.
+nodeName: virtual-kubelet-aca-sandboxes
+
+# The provider authenticates to Azure through workload identity. The client ID is required.
+workloadIdentity:
+  clientId: ""
+
+image:
+  repository: ""
+  # Defaults to the chart appVersion.
+  tag: ""
+  pullPolicy: IfNotPresent
